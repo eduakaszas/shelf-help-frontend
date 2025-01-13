@@ -56,6 +56,10 @@ const styles: Styles = StyleSheet.create({
         fontSize: 14,
         color: '#666',
     },
+    removeButton: {
+        color: 'red',
+        textAlign: 'right',
+    },
 });
 
 export default ItemList;

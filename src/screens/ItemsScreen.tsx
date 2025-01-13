@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import ItemList from '../components/ItemList';
 import { Item } from '../types/Item';
-import { fetchItems } from '../services/api';
+import {deleteItem, fetchItems} from '../services/api';
 
 const ItemsScreen: React.FC = () => {
     const [items, setItems] = React.useState<Item[]>([]);
@@ -18,9 +18,17 @@ const ItemsScreen: React.FC = () => {
         });
     }, []);
 
+    const handleRemoveItem = async (itemId: number) => {
+        await deleteItem(itemId);
+        setItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
+    };
+
     return (
         <View style={styles.container}>
-            <ItemList items={items} />
+            <ItemList
+                items={items}
+                onRemoveItem={handleRemoveItem}
+            />
         </View>
     );
 }

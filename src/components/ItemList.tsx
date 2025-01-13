@@ -1,18 +1,28 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, StyleProp, TextStyle, ViewStyle } from 'react-native';
+import { View, Text, StyleSheet, FlatList, StyleProp, TextStyle, ViewStyle, TouchableOpacity } from 'react-native';
 import { Item } from '../types/Item';
 
 interface ItemListProps {
     items: Item[];
+    onRemoveItem: (itemId: number) => void;
 }
 
 interface Styles {
     itemContainer: StyleProp<ViewStyle>;
     itemName: StyleProp<TextStyle>;
     itemDetails: StyleProp<TextStyle>;
+    removeButton: StyleProp<TextStyle>;
 }
 
-const ItemList: React.FC<ItemListProps> = ({ items }) => {
+const ItemList: React.FC<ItemListProps> = ({ items, onRemoveItem }) => {
+    const [deleteItemId, setDeleteItemId] = React.useState<number | null>(null);
+
+    const removeItem = async (itemId: number) => {
+        setDeleteItemId(itemId);
+        await onRemoveItem(itemId);
+        setDeleteItemId(null);
+    };
+
     return (
         <FlatList
             data={items}
@@ -23,6 +33,9 @@ const ItemList: React.FC<ItemListProps> = ({ items }) => {
                     <Text style={styles.itemDetails}>
                         Count: {item.count} | Expires: {item.expirationDate} || 'N/A'
                     </Text>
+                    <TouchableOpacity onPress={() => removeItem(item.id)}>
+                        <Text style={styles.removeButton}>X</Text>
+                    </TouchableOpacity>
                 </View>
             )}
         />

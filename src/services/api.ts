@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Item, CreateItemDTO} from "../types/Item";
+import { Item, CreateItemDTO } from "../types/Item";
 
 const API = axios.create({ baseURL: 'http://localhost:5235/api' });
 

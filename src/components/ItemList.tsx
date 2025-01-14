@@ -17,28 +17,30 @@ interface Styles {
 const ItemList: React.FC<ItemListProps> = ({ items, onRemoveItem }) => {
     const [deleteItemId, setDeleteItemId] = React.useState<number | null>(null);
 
-    const removeItem = async (itemId: number) => {
+    const handleDeleteButtonPress = async (itemId: number) => {
         setDeleteItemId(itemId);
         await onRemoveItem(itemId);
         setDeleteItemId(null);
     };
 
     return (
-        <FlatList
-            data={items}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-                <View key={item.id} style={styles.itemContainer}>
-                    <Text style={styles.itemName}>>{item.name}</Text>
-                    <Text style={styles.itemDetails}>
-                        Count: {item.count} | Expires: {item.expirationDate} || 'N/A'
-                    </Text>
-                    <TouchableOpacity onPress={() => removeItem(item.id)}>
-                        <Text style={styles.removeButton}>X</Text>
-                    </TouchableOpacity>
-                </View>
-            )}
-        />
+        <View>
+            <FlatList
+                data={items}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
+                    <View key={item.id} style={styles.itemContainer}>
+                        <Text style={styles.itemName}>>{item.name}</Text>
+                        <Text style={styles.itemDetails}>
+                            Count: {item.count} | Expires: {item.expirationDate} || 'N/A'
+                        </Text>
+                        <TouchableOpacity onPress={() => handleDeleteButtonPress(item.id)}>
+                            <Text style={styles.removeButton}>X</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+            />
+        </View>
     )
 }
 

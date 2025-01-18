@@ -49,7 +49,7 @@ const AddItemModal = ({ visible, onClose, onSubmit }) => {
             visible={visible}
             animationType="slide"
             transparent={true}
-            // onRequestClose={onClose}
+            onRequestClose={onClose}
         >
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
@@ -64,6 +64,7 @@ const AddItemModal = ({ visible, onClose, onSubmit }) => {
                         style={styles.input}
                         placeholder="Count"
                         value={itemData.count.toString()}
+                        keyboardType="numeric"
                         onChangeText={(text) => setItemData({ ...itemData, count: Number(text) })}
                     />
                     <TextInput

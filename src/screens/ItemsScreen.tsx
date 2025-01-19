@@ -39,12 +39,12 @@ const ItemsScreen: React.FC = () => {
 
     return (
         <View style={styles.container}>
-            <Pressable
-                onPress={() => setIsAddModalVisible(true)}
-                style={styles.addButton}
-            >
-                <Text style={styles.addButtonText}>Add Item</Text>
-            </Pressable>
+            {/*<Pressable*/}
+            {/*    onPress={() => setIsAddModalVisible(true)}*/}
+            {/*    style={styles.addButton}*/}
+            {/*>*/}
+            {/*    <Text style={styles.addButtonText}>Add Item</Text>*/}
+            {/*</Pressable>*/}
             <ItemList
                 items={items}
                 onRemoveItem={deleteItemAndUpdateState}
@@ -62,7 +62,6 @@ const styles: Styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
-        backgroundColor: '#f9f9f9',
     },
     addButton: {
         padding: 16,

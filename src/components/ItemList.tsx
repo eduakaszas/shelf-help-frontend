@@ -15,7 +15,7 @@ interface Styles {
 const ItemList: React.FC<ItemListProps> = ({ items, onRemoveItem }) => {
     const [deleteItemId, setDeleteItemId] = React.useState<number | null>(null);
 
-    const handleDeleteButtonPress = async (itemId: number) => {
+    const handleDelete = async (itemId: number) => {
         setDeleteItemId(itemId);
         await onRemoveItem(itemId);
         setDeleteItemId(null);
@@ -27,7 +27,7 @@ const ItemList: React.FC<ItemListProps> = ({ items, onRemoveItem }) => {
                 data={items}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
-                    <ListItem item={item} />
+                    <ListItem item={item} onDelete={handleDelete}/>
                 )}
             />
         </View>

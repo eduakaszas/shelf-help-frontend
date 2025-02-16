@@ -1,13 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, StyleProp, TextStyle, ViewStyle, Animated } from 'react-native';
+import {Image, Text, StyleSheet, StyleProp, TextStyle, ViewStyle, Dimensions, ImageStyle} from 'react-native';
 import { Item } from '../types/Item';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
-import Reanimated, {
-    SharedValue,
-    useAnimatedStyle,
-    AnimatedStyle
-} from 'react-native-reanimated';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import {DefaultStyle} from "react-native-reanimated/lib/typescript/hook/commonTypes";
 
 interface ListItemProps {
@@ -15,71 +10,98 @@ interface ListItemProps {
     onDelete: (itemId: number) => void;
 }
 
-interface RenderRightActionsProps {
-    progress: Animated.AnimatedInterpolation<number>;
-    dragX: Animated.AnimatedInterpolation<number>;
-};
-
 interface Styles {
     itemContainer: StyleProp<ViewStyle>;
+    item: StyleProp<ViewStyle>;
     itemName: StyleProp<TextStyle>;
     itemDetails: StyleProp<TextStyle>;
     detail: StyleProp<TextStyle>;
+    deleteButton: StyleProp<ViewStyle>;
+    icon: StyleProp<ImageStyle>;
 };
 
-const ListItem: React.FC<ListItemProps> = ({ item, onDelete }) => {
-    const renderRightActions = (progress: SharedValue<number>, dragX: SharedValue<number>) => {
-        const styleAnimation = useAnimatedStyle(() => {
-            return {
-                transform: [{ translateX: dragX.value + 50 }],
-            } as DefaultStyle; // @TODO: is there a better way to type this?
-        });
+const WIDTH_SCREEN = Dimensions.get('window').width;
+const WIDTH_ITEM = WIDTH_SCREEN * 0.85;
+const ITEM_HEIGHT = 75;
+const SWIPE_THRESHOLD = -WIDTH_SCREEN * 0.3;
 
-        return (
-            <Reanimated.View style={styleAnimation}>
-                <Text>Delete</Text>
-            </Reanimated.View>
-        );
-    };
+const ListItem: React.FC<ListItemProps> = ({ item, onDelete }) => {
+    const translateX = useSharedValue(0);
+    const pressed = useSharedValue(false);
+    const opacity = useSharedValue(1);
+
+    const swipeGesture = Gesture.Pan()
+        .onBegin(() => {
+            pressed.value = true;
+        })
+        .onChange((event) => {
+            if (event.translationX < 0) {
+                translateX.value = event.translationX;
+            }
+        })
+        .onFinalize((event) => {
+            const shouldDelete = translateX.value < SWIPE_THRESHOLD;
+
+            if (shouldDelete) {
+                translateX.value = withTiming(-WIDTH_SCREEN, undefined, (isDone) => {
+                    if (isDone) {
+                        runOnJS(onDelete)(item.id);
+                    }
+                })
+            } else {
+                translateX.value = withSpring(0);
+            }
+
+            pressed.value = false;
+        })
+
+
+    const transformStyle = useAnimatedStyle(() => ({
+        transform: [{ translateX: translateX.value }] as DefaultStyle['transform'],
+    }))
+
+    const opacityStyle = useAnimatedStyle(() => ({
+        opacity: translateX.value < -WIDTH_SCREEN * 0.7 ? 0 : 1
+    }));
 
     return (
-        <GestureHandlerRootView>
-            <ReanimatedSwipeable
-                friction={2}
-                enableTrackpadTwoFingerGesture
-                rightThreshold={40}
-                renderRightActions={renderRightActions}
-                onSwipeableOpen={() => onDelete(item.id)}
-            >
-                <View key={item.id} style={styles.itemContainer}>
+        <Animated.View style={styles.itemContainer}>
+            <Animated.View style={[styles.deleteButton, opacityStyle]}>
+                <Image source={{uri: 'https://cdn-icons-png.flaticon.com/128/11540/11540197.png'}} style={styles.icon}/>
+            </Animated.View>
+            <GestureDetector gesture={swipeGesture}>
+                <Animated.View key={item.id} style={[styles.item, transformStyle]}>
                     <Text style={styles.itemName}>{item.name}</Text>
-                    <View style={styles.itemDetails}>
-                        <Text style={styles.detail}>
-                            Count: {item.count}
-                        </Text>
-                        <Text style={styles.detail}>
-                            Expires: {item.expirationDate}
-                        </Text>
-                    </View>
-                </View>
-            </ReanimatedSwipeable>
-        </GestureHandlerRootView>
+                </Animated.View>
+            </GestureDetector>
+        </Animated.View>
     );
 };
 
 const styles: Styles = StyleSheet.create({
     itemContainer: {
         width: '100%',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        padding: 16,
+    },
+    item: {
+        width: '90%',
+        height: ITEM_HEIGHT,
+        justifyContent: 'center',
         backgroundColor: '#414141',
-        marginBottom: 10,
-        borderRadius: 15,
+        paddingLeft: 10,
+        marginVertical: 5,
+        borderRadius: 10,
+        elevation: 5,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 18,
+        },
+        shadowOpacity: 0.08,
+        shadowRadius: 10,
     },
     itemName: {
-        fontSize: 18,
+        fontSize: 14,
         fontWeight: 'bold',
         color: '#fff',
     },
@@ -89,6 +111,18 @@ const styles: Styles = StyleSheet.create({
     detail: {
         fontSize: 14,
         color: '#666',
+    },
+    deleteButton: {
+        height: 70,
+        width: 70,
+        position: 'absolute',
+        right: '10%',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    icon: {
+        width: 30,
+        height: 35,
     },
 });
 

@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Pressable, Text, StyleProp, TextStyle, ViewStyle } from 'react-native';
+import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 import ItemList from '../components/ItemList';
 import AddItemModal from '../components/AddItemModal';
 import { CreateItemDTO, Item } from '../types/Item';
 import { addItem, deleteItem, fetchItems } from '../services/api';
+import {GestureHandlerRootView} from "react-native-gesture-handler";
 
 interface Styles {
     container: StyleProp<ViewStyle>
-    addButtonText: StyleProp<TextStyle>
-    addButton: StyleProp<ViewStyle>
 }
 
 const ItemsScreen: React.FC = () => {
@@ -38,41 +37,25 @@ const ItemsScreen: React.FC = () => {
     };
 
     return (
-        <View style={styles.container}>
-            {/*<Pressable*/}
-            {/*    onPress={() => setIsAddModalVisible(true)}*/}
-            {/*    style={styles.addButton}*/}
-            {/*>*/}
-            {/*    <Text style={styles.addButtonText}>Add Item</Text>*/}
-            {/*</Pressable>*/}
-            <ItemList
-                items={items}
-                onRemoveItem={deleteItemAndUpdateState}
-            />
-            <AddItemModal
-                visible={isAddModalVisible}
-                onClose={() => setIsAddModalVisible(false)}
-                onSubmit={addItemAndUpdateState}
-            />
-        </View>
+        <GestureHandlerRootView style={styles.container}>
+            <View style={styles.container}>
+                <ItemList
+                    items={items}
+                    onRemoveItem={deleteItemAndUpdateState}
+                />
+                <AddItemModal
+                    visible={isAddModalVisible}
+                    onClose={() => setIsAddModalVisible(false)}
+                    onSubmit={addItemAndUpdateState}
+                />
+            </View>
+        </GestureHandlerRootView>
     );
 }
 
 const styles: Styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
-    },
-    addButton: {
-        padding: 16,
-        backgroundColor: '#000',
-        borderRadius: 8,
-        alignItems: 'center',
-        marginBottom: 16,
-    },
-    addButtonText: {
-        color: '#fff',
-        fontSize: 16,
     },
 });
 

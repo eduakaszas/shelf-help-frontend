@@ -1,5 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, StyleProp, TextStyle, ViewStyle, TouchableOpacity } from 'react-native';
+import {
+    View,
+    StyleSheet,
+    FlatList,
+} from 'react-native';
 import ListItem from './ListItem'
 import { Item } from '../types/Item';
 
@@ -8,12 +12,9 @@ interface ItemListProps {
     onRemoveItem: (itemId: number) => void;
 }
 
-interface Styles {
-    container: StyleProp<ViewStyle>;
-}
-
 const ItemList: React.FC<ItemListProps> = ({ items, onRemoveItem }) => {
     const [deleteItemId, setDeleteItemId] = React.useState<number | null>(null);
+    const scrollRef = React.useRef(null);
 
     const handleDelete = async (itemId: number) => {
         setDeleteItemId(itemId);
@@ -24,20 +25,28 @@ const ItemList: React.FC<ItemListProps> = ({ items, onRemoveItem }) => {
     return (
         <View style={styles.container}>
             <FlatList
+                showsVerticalScrollIndicator={false}
+                ref={scrollRef}
+                style={styles.scrollList}
                 data={items}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
-                    <ListItem item={item} onDelete={handleDelete}/>
+                    <View key={item.id}>
+                        <ListItem item={item} onDelete={handleDelete}/>
+                    </View>
                 )}
             />
         </View>
     )
 }
 
-const styles: Styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
+    scrollList: {
+        flex: 1,
+    }
 });
 
 export default ItemList;

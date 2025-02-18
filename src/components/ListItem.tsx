@@ -21,19 +21,15 @@ interface Styles {
 };
 
 const WIDTH_SCREEN = Dimensions.get('window').width;
-const WIDTH_ITEM = WIDTH_SCREEN * 0.85;
 const ITEM_HEIGHT = 75;
 const SWIPE_THRESHOLD = -WIDTH_SCREEN * 0.3;
 
 const ListItem: React.FC<ListItemProps> = ({ item, onDelete }) => {
     const translateX = useSharedValue(0);
-    const pressed = useSharedValue(false);
-    const opacity = useSharedValue(1);
 
     const swipeGesture = Gesture.Pan()
-        .onBegin(() => {
-            pressed.value = true;
-        })
+        .activeOffsetX([-15, 15])
+        .failOffsetY([-10, 10])
         .onChange((event) => {
             if (event.translationX < 0) {
                 translateX.value = event.translationX;
@@ -51,22 +47,15 @@ const ListItem: React.FC<ListItemProps> = ({ item, onDelete }) => {
             } else {
                 translateX.value = withSpring(0);
             }
-
-            pressed.value = false;
         })
-
 
     const transformStyle = useAnimatedStyle(() => ({
         transform: [{ translateX: translateX.value }] as DefaultStyle['transform'],
     }))
 
-    const opacityStyle = useAnimatedStyle(() => ({
-        opacity: translateX.value < -WIDTH_SCREEN * 0.7 ? 0 : 1
-    }));
-
     return (
         <Animated.View style={styles.itemContainer}>
-            <Animated.View style={[styles.deleteButton, opacityStyle]}>
+            <Animated.View style={styles.deleteButton}>
                 <Image source={{uri: 'https://cdn-icons-png.flaticon.com/128/11540/11540197.png'}} style={styles.icon}/>
             </Animated.View>
             <GestureDetector gesture={swipeGesture}>
@@ -116,7 +105,7 @@ const styles: Styles = StyleSheet.create({
         height: 70,
         width: 70,
         position: 'absolute',
-        right: '10%',
+        right: '5%',
         justifyContent: 'center',
         alignItems: 'center',
     },

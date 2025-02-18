@@ -1,11 +1,11 @@
 import React from 'react';
 import {
     View,
-    StyleSheet,
-    FlatList,
+    StyleSheet
 } from 'react-native';
 import ListItem from './ListItem'
 import { Item } from '../types/Item';
+import Animated from 'react-native-reanimated';
 
 interface ItemListProps {
     items: Item[];
@@ -24,18 +24,17 @@ const ItemList: React.FC<ItemListProps> = ({ items, onRemoveItem }) => {
 
     return (
         <View style={styles.container}>
-            <FlatList
+            <Animated.ScrollView
                 showsVerticalScrollIndicator={false}
-                ref={scrollRef}
                 style={styles.scrollList}
-                data={items}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
+                scrollRef={scrollRef}
+            >
+                {items.map(item => (
                     <View key={item.id}>
-                        <ListItem item={item} onDelete={handleDelete}/>
+                        <ListItem item={item} onDelete={handleDelete} />
                     </View>
-                )}
-            />
+                ))}
+            </Animated.ScrollView>
         </View>
     )
 }

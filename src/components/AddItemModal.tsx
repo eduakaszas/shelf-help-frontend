@@ -15,14 +15,6 @@ interface ItemFormData {
     expirationDate: string | null;
 }
 
-interface Styles {
-    modalTitle: StyleProp<TextStyle>;
-    input: StyleProp<TextStyle>;
-    modalButtons: StyleProp<ViewStyle>;
-    modalContent: StyleProp<ViewStyle>;
-    modalContainer: StyleProp<ViewStyle>;
-}
-
 const AddItemModal = ({ visible, onClose, onSubmit }) => {
     const [itemData, setItemData] = useState<ItemFormData>({
         name: '',
@@ -53,7 +45,7 @@ const AddItemModal = ({ visible, onClose, onSubmit }) => {
         >
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
-                    <Text style={styles.modalTitle}>Add new item</Text>
+                    <Text style={styles.modalTitle as StyleProp<TextStyle>}>Add new item</Text>
                     <TextInput
                         style={styles.input}
                         placeholder="Name"
@@ -83,7 +75,7 @@ const AddItemModal = ({ visible, onClose, onSubmit }) => {
     )
 }
 
-const styles: Styles = StyleSheet.create({
+const styles = StyleSheet.create({
     modalContent: {
         backgroundColor: 'white',
         padding: 16,

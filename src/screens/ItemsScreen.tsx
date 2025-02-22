@@ -6,10 +6,6 @@ import { CreateItemDTO, Item } from '../types/Item';
 import { addItem, deleteItem, fetchItems } from '../services/api';
 import {GestureHandlerRootView} from "react-native-gesture-handler";
 
-interface Styles {
-    container: StyleProp<ViewStyle>
-}
-
 const ItemsScreen: React.FC = () => {
     const [items, setItems] = useState<Item[]>([]);
     const [isAddModalVisible, setIsAddModalVisible] = useState(false);
@@ -53,7 +49,7 @@ const ItemsScreen: React.FC = () => {
     );
 }
 
-const styles: Styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
     },

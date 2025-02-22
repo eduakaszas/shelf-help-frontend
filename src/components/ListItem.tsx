@@ -10,16 +10,6 @@ interface ListItemProps {
     onDelete: (itemId: number) => void;
 }
 
-interface Styles {
-    itemContainer: StyleProp<ViewStyle>;
-    item: StyleProp<ViewStyle>;
-    itemName: StyleProp<TextStyle>;
-    itemDetails: StyleProp<TextStyle>;
-    detail: StyleProp<TextStyle>;
-    deleteButton: StyleProp<ViewStyle>;
-    icon: StyleProp<ImageStyle>;
-};
-
 const WIDTH_SCREEN = Dimensions.get('window').width;
 const ITEM_HEIGHT = 75;
 const SWIPE_THRESHOLD = -WIDTH_SCREEN * 0.3;
@@ -60,14 +50,14 @@ const ListItem: React.FC<ListItemProps> = ({ item, onDelete }) => {
             </Animated.View>
             <GestureDetector gesture={swipeGesture}>
                 <Animated.View key={item.id} style={[styles.item, transformStyle]}>
-                    <Text style={styles.itemName}>{item.name}</Text>
+                    <Text style={styles.itemName as StyleProp<TextStyle>}>{item.name}</Text>
                 </Animated.View>
             </GestureDetector>
         </Animated.View>
     );
 };
 
-const styles: Styles = StyleSheet.create({
+const styles = StyleSheet.create({
     itemContainer: {
         width: '100%',
         alignItems: 'center',

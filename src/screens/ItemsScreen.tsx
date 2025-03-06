@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, StyleSheet} from 'react-native';
 import ItemList from '../components/ItemList';
 import AddItemModal from '../components/AddItemModal';
 import { CreateItemDTO, Item } from '../types/Item';
@@ -53,6 +53,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
+    editorModal: {
+        flex: 1,
+    }
 });
 
 export default ItemsScreen;

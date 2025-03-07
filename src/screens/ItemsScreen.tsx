@@ -3,7 +3,7 @@ import {View, StyleSheet} from 'react-native';
 import ItemList from '../components/ItemList';
 import AddItemModal from '../components/AddItemModal';
 import { CreateItemDTO, Item } from '../types/Item';
-import { addItem, deleteItem, fetchItems } from '../services/api';
+import { addItem, deleteItem, fetchItems, updateItem } from '../services/api';
 import {GestureHandlerRootView} from "react-native-gesture-handler";
 
 const ItemsScreen: React.FC = () => {
@@ -32,12 +32,18 @@ const ItemsScreen: React.FC = () => {
         setIsAddModalVisible(false);
     };
 
+    const editItemAndUpdateState = async (itemId: number, updatedData: Partial<Item>) => {
+        const updatedItem = await updateItem(itemId, updatedData);
+        setItems((prevItems) => prevItems.map(item => item.id === itemId ? updatedItem : item));
+    }
+
     return (
         <GestureHandlerRootView style={styles.container}>
             <View style={styles.container}>
                 <ItemList
                     items={items}
                     onRemoveItem={deleteItemAndUpdateState}
+                    onEditItem={editItemAndUpdateState}
                 />
                 <AddItemModal
                     visible={isAddModalVisible}

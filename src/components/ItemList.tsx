@@ -1,10 +1,11 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
     View,
     StyleSheet,
     Text
 } from 'react-native';
 import ListItem from './ListItem'
+import ListItemEditor from './ListItemEditor'
 import { Item } from '../types/Item';
 import Animated from 'react-native-reanimated';
 import BottomSheet, {BottomSheetView} from "@gorhom/bottom-sheet";
@@ -12,13 +13,15 @@ import BottomSheet, {BottomSheetView} from "@gorhom/bottom-sheet";
 interface ItemListProps {
     items: Item[];
     onRemoveItem: (itemId: number) => void;
+    onEditItem: (itemId: number, updatedData: Partial<Item>) => void;
 }
 
-const ItemList: React.FC<ItemListProps> = ({ items, onRemoveItem }) => {
+const ItemList: React.FC<ItemListProps> = ({ items, onRemoveItem, onEditItem }) => {
     const [deleteItemId, setDeleteItemId] = React.useState<number | null>(null);
     const scrollRef = React.useRef(null);
     const [isEditorModalVisible, setIsEditorModalVisible] = useState(false);
     const editorModalRef = useRef<BottomSheet | null>(null);
+    const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 
     useEffect(() => {
         if (isEditorModalVisible && editorModalRef.current) {
@@ -28,19 +31,30 @@ const ItemList: React.FC<ItemListProps> = ({ items, onRemoveItem }) => {
         }
     }, [isEditorModalVisible]);
 
-    const handleEditorModalChanges = useCallback((index: number) => {
-        console.log('handleEditorModalChanges', index);
-
+    const handleEditorModalChanges = (index: number) => {
         if (index === -1) {
             setIsEditorModalVisible(false);
+            setSelectedItem(null);
         }
-    }, []);
+    };
 
     const handleDelete = async (itemId: number) => {
         setDeleteItemId(itemId);
         await onRemoveItem(itemId);
         setDeleteItemId(null);
     };
+
+    const handleSelectItem = (item: Item) => {
+        setSelectedItem(item);
+        setIsEditorModalVisible(true);
+    };
+
+    const handleEdit = (itemId: number, updatedData: Partial<Item>) => {
+        console.log('editing....')
+        onEditItem(itemId, updatedData);
+        console.log(itemId, updatedData)
+        setIsEditorModalVisible(false);
+    }
 
     return (
         <View style={styles.container}>
@@ -56,6 +70,7 @@ const ItemList: React.FC<ItemListProps> = ({ items, onRemoveItem }) => {
                             onDelete={handleDelete}
                             setIsEditorModalVisible={setIsEditorModalVisible}
                             isEditorModalVisible={true}
+                            onSelectItem={handleSelectItem}
                         />
                     </View>
                 ))}
@@ -68,7 +83,16 @@ const ItemList: React.FC<ItemListProps> = ({ items, onRemoveItem }) => {
                 index={-1}
             >
                 <BottomSheetView>
-                    <Text>Awesome 🎉</Text>
+
+                    {
+                        selectedItem && (
+                            <ListItemEditor
+                                item={selectedItem}
+                                onClose={() => setIsEditorModalVisible(false)}
+                                onEdit={handleEdit}
+                            />
+                        )
+                    }
                 </BottomSheetView>
             </BottomSheet>
         </View>

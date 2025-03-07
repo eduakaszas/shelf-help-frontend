@@ -11,6 +11,7 @@ interface ListItemProps {
     onDelete: (itemId: number) => void;
     setIsEditorModalVisible: (visible: boolean) => void;
     isEditorModalVisible: boolean;
+    onSelectItem: (item: Item) => void;
 }
 
 const WIDTH_SCREEN = Dimensions.get('window').width;
@@ -18,11 +19,11 @@ const ITEM_HEIGHT = 75;
 const DELETE_SWIPE_THRESHOLD = -WIDTH_SCREEN * 0.3;
 const EDIT_SWIPE_THRESHOLD = WIDTH_SCREEN * 0.3;
 
-const ListItem: React.FC<ListItemProps> = ({ item, onDelete, setIsEditorModalVisible }) => {
+const ListItem: React.FC<ListItemProps> = ({ item, onDelete, setIsEditorModalVisible, onSelectItem }) => {
     const translateX = useSharedValue(0);
 
     const handleOpenModal = () => {
-        setIsEditorModalVisible(true);
+        onSelectItem(item);
     }
 
     const swipeGesture = Gesture.Pan()

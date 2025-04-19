@@ -2,7 +2,8 @@ import React, {useEffect, useRef, useState} from 'react';
 import {
     View,
     StyleSheet,
-    Text
+    Text,
+    SectionList
 } from 'react-native';
 import ListItem from './ListItem'
 import ListItemEditor from './ListItemEditor'
@@ -56,6 +57,27 @@ const ItemList: React.FC<ItemListProps> = ({ items, onRemoveItem, onEditItem }) 
         setIsEditorModalVisible(false);
     }
 
+    const getGroupedSections = () => {
+        const groupedItems = items.reduce((groups, item) => {
+            const category = item.category || "Uncategorized";
+
+            if (!groups[category]) {
+                groups[category] = [];
+            }
+            groups[category].push(item);
+            return groups;
+        }, {});
+
+        return Object.keys(groupedItems)
+            .sort()
+            .map(category => ({
+                title: category,
+                data: groupedItems[category]
+            }))
+    }
+
+    const sections = getGroupedSections();
+
     return (
         <View style={styles.container}>
             <Animated.ScrollView
@@ -63,17 +85,30 @@ const ItemList: React.FC<ItemListProps> = ({ items, onRemoveItem, onEditItem }) 
                 style={styles.scrollList}
                 scrollRef={scrollRef}
             >
-                {items.map(item => (
-                    <View key={item.id}>
-                        <ListItem
-                            item={item}
-                            onDelete={handleDelete}
-                            setIsEditorModalVisible={setIsEditorModalVisible}
-                            isEditorModalVisible={true}
-                            onSelectItem={handleSelectItem}
-                        />
-                    </View>
-                ))}
+                {
+                    sections.map(section => (
+                        <View key={section.title}>
+                            <View>
+                                <Text>{section.title}</Text>
+                            </View>
+                            <View>
+                                {
+                                    section.data.map(item => (
+                                        <View key={item.id}>
+                                            <ListItem
+                                                item={item}
+                                                onDelete={handleDelete}
+                                                setIsEditorModalVisible={setIsEditorModalVisible}
+                                                isEditorModalVisible={true}
+                                                onSelectItem={handleSelectItem}
+                                            />
+                                        </View>
+                                    ))
+                                }
+                            </View>
+                        </View>
+                    ))
+                }
             </Animated.ScrollView>
             <BottomSheet
                 ref={editorModalRef}

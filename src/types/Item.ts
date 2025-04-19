@@ -4,6 +4,7 @@ export interface Item {
     count: number;
     expirationDate?: string;
     consumptionRate: number;
+    category: string;
 }
 
 export interface CreateItemDTO {
@@ -11,4 +12,5 @@ export interface CreateItemDTO {
     count: number;
     expirationDate?: string;
     consumptionRate: number;
+    category: string;
 }

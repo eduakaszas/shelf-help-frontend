@@ -34,6 +34,7 @@ const ItemsScreen: React.FC = () => {
 
     const editItemAndUpdateState = async (itemId: number, updatedData: Partial<Item>) => {
         const updatedItem = await updateItem(itemId, updatedData);
+        console.log('Updated item:', updatedItem);
         setItems((prevItems) => prevItems.map(item => item.id === itemId ? updatedItem : item));
     }
 

@@ -1,9 +1,8 @@
-import React, {useCallback, useRef} from 'react';
+import React from 'react';
 import {Image, Text, StyleSheet, StyleProp, TextStyle, ViewStyle, Dimensions, ImageStyle} from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import {DefaultStyle} from "react-native-reanimated/lib/typescript/hook/commonTypes";
-import ListItemEditorModal from "./ListItemEditorModal";
 import { Item } from '../types/Item';
 
 interface ListItemProps {
@@ -99,7 +98,7 @@ const styles = StyleSheet.create({
         shadowRadius: 10,
     },
     itemName: {
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: 'bold',
         color: '#fff',
     },

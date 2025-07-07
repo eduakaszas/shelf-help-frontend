@@ -3,7 +3,7 @@ import {
     View,
     StyleSheet,
     Text,
-    SectionList
+    SectionList, StyleProp, TextStyle
 } from 'react-native';
 import ListItem from './ListItem'
 import ListItemEditor from './ListItemEditor'
@@ -89,7 +89,7 @@ const ItemList: React.FC<ItemListProps> = ({ items, onRemoveItem, onEditItem }) 
                     sections.map(section => (
                         <View key={section.title}>
                             <View>
-                                <Text>{section.title}</Text>
+                                <Text style={styles.category as StyleProp<TextStyle>}>{section.title.toUpperCase()}</Text>
                             </View>
                             <View>
                                 {
@@ -137,9 +137,17 @@ const ItemList: React.FC<ItemListProps> = ({ items, onRemoveItem, onEditItem }) 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        marginVertical: 10,
     },
     scrollList: {
         flex: 1,
+    },
+    category: {
+        marginHorizontal: 17,
+        marginVertical: 8,
+        fontSize: 15,
+        fontWeight: 'bold',
+        color: 'white'
     }
 });
 

@@ -12,7 +12,13 @@ const ListItemEditor: React.FC<ListItemEditorProps> = ({ item, onClose, onEdit }
     const [name, setName] = useState<string>(item.name);
 
     const handleSave = () => {
-        onEdit(item.id, { name });
+        onEdit(item.id, {
+            name: name,
+            category: item.category,
+            count: item.count,
+            expirationDate: item.expirationDate,
+            consumptionRate: item.consumptionRate
+        });
     }
 
     return (
